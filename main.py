@@ -1,33 +1,24 @@
-import asyncio
-import logging
-import glob
-import importlib
-from pathlib import Path
-
-from pyrogram import Client, idle
 from info import *
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+app = Client(
+    "AutoFilterBot",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
+)
 
-app = Client("movieflix", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+@app.on_message(filters.command("start") & filters.private)
+async def start_cmd(client, message):
+    name = message.from_user.first_name
+    buttons = [
+        [InlineKeyboardButton("📢 Channel", url="https://t.me/YourChannel")],
+        [InlineKeyboardButton("👤 Owner", url="https://t.me/YourOwner")]
+    ]
+    await message.reply_text(
+        f"Hello {name} 👋\n\nI am your Auto Filter Movie Bot!",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
-# auto-load plugins from plugins/ directory
-for path in glob.glob("plugins/*.py"):
-    name = Path(path).stem
-    importlib.import_module(f"plugins.{name}")
-    logging.info(f"Loaded plugin: {name}")
-
-async def main():
-    await app.start()
-    logging.info("🎬 Movie Flix Filter Bot started.")
-    # optionally, you can send a startup message to LOG_CHANNEL if configured
-    if LOG_CHANNEL:
-        try:
-            await app.send_message(LOG_CHANNEL, "Movie Flix Filter Bot started ✅")
-        except Exception as e:
-            logging.warning("Couldn't send startup message to LOG_CHANNEL: %s", e)
-    await idle()
-    await app.stop()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+app.run()
