@@ -8,3 +8,9 @@ launch_background_bot()
 if __name__ == "__main__":
     # Useful for local testing (not used by Gunicorn on Render)
     app.run(host="0.0.0.0", port=10000)
+from web import app
+
+# WSGI entry point for Gunicorn
+if __name__ == "__main__":
+    app.run()
+    
