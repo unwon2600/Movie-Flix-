@@ -1,9 +1,7 @@
-pyrogram==2.0.39
+pyrogram
 tgcrypto
-motor
+pymongo
 aiohttp
-pytz
+cinemagoer
 imdbpy
 python-dotenv
-rapidfuzz
-requests
