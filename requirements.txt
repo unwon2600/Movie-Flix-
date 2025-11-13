@@ -5,3 +5,4 @@ aiohttp
 cinemagoer
 imdbpy
 python-dotenv
+rapidfuzz
