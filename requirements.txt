@@ -1,10 +1,6 @@
 pyrogram
 tgcrypto
 pymongo
-aiohttp
-cinemagoer
-imdbpy
-python-dotenv
-rapidfuzz
+dnspython
 requests
 motor
