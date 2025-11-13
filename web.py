@@ -1,5 +1,6 @@
-from flask import Flask
-import threading, asyncio, time
+# web.py
+from flask import Flask, jsonify, render_template_string
+import threading, time
 from main import run_bot
 from pyrogram import Client
 
@@ -11,47 +12,47 @@ bot_status = {
     "start_time": None
 }
 
-# --- BOT THREAD FUNCTION ---
-def start_bot():
+# Start the bot in this thread (called from wsgi on worker start)
+def start_bot_thread():
     global bot_status
     try:
-        print("🎬 Starting Movie Flix Bot...")
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        bot = run_bot()  # should return a Client
+        bot = run_bot()  # run_bot returns a started pyrogram Client
         if isinstance(bot, Client):
             bot_status["connected"] = True
-            bot_status["username"] = bot.me.username if bot.me else "Unknown"
+            # bot.me may be None for a short time; guard it
+            bot_status["username"] = getattr(bot.me, "username", None) or "unknown"
             bot_status["start_time"] = time.strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            bot_status["connected"] = False
     except Exception as e:
         bot_status["connected"] = False
-        print(f"❌ Bot failed to start: {e}")
+        print("Bot failed to start:", e)
 
-# --- ROUTES ---
+# Flask routes
 @app.route("/")
 def home():
     if bot_status["connected"]:
         html = f"""
-        <center>
-        <h1>🎬 Movie Flix Telegram Bot ✅</h1>
-        <p><b>🤖 Username:</b> @{bot_status['username']}</p>
-        <p><b>🕓 Started at:</b> {bot_status['start_time']}</p>
-        <p><b>Status:</b> <span style='color:green;'>Connected</span></p>
+        <center style="font-family: Arial, Helvetica, sans-serif; margin-top:50px;">
+            <h1>🎬 Movie Flix Bot ✅</h1>
+            <p><b>🤖 Username:</b> @{bot_status['username']}</p>
+            <p><b>🕓 Started at:</b> {bot_status['start_time']}</p>
+            <p><b>Status:</b> <span style='color:green;'>Connected</span></p>
         </center>
         """
     else:
         html = """
-        <center>
-        <h1>❌ Movie Flix Bot Not Connected</h1>
-        <p>Please wait a few seconds or check Render logs.</p>
+        <center style="font-family: Arial, Helvetica, sans-serif; margin-top:50px;">
+            <h1>❌ Movie Flix Bot Not Connected</h1>
+            <p>Check Render logs or wait a few seconds.</p>
         </center>
         """
-    return html
+    return render_template_string(html)
 
-# --- STARTUP ---
-if __name__ == "__main__":
-    threading.Thread(target=start_bot).start()
-    app.run(host="0.0.0.0", port=10000)
+@app.route("/status")
+def status():
+    return jsonify(bot_status)
+
+# Expose start function for wsgi loader to call
+def launch_background_bot():
+    t = threading.Thread(target=start_bot_thread, daemon=True)
+    t.start()
     
