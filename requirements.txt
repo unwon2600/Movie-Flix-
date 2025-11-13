@@ -7,3 +7,4 @@ imdbpy
 python-dotenv
 rapidfuzz
 requests
+motor
