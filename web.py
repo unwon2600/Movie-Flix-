@@ -1,34 +1,31 @@
 from flask import Flask
 import threading
-import time
-import os
 from main import run_bot
-from pyrogram.errors import FloodWait
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "🎬 Movie Flix Bot is Live!"
+bot_status = {"connected": False}
 
-@app.route('/status')
-def status():
-    return {"status": "ok", "bot": "running"}
-
+# --- BOT THREAD FUNCTION ---
 def start_bot():
-    while True:
-        try:
-            print("🎬 Starting Movie Flix Bot...")
-            run_bot()
-        except FloodWait as e:
-            print(f"⚠️ FloodWait: sleeping for {e.value} seconds...")
-            time.sleep(e.value)
-        except Exception as err:
-            print(f"❌ Bot crashed: {err}")
-            print("🔁 Restarting in 10 seconds...")
-            time.sleep(10)
+    global bot_status
+    try:
+        run_bot()
+        bot_status["connected"] = True
+    except Exception as e:
+        bot_status["connected"] = False
+        print(f"Bot Error: {e}")
 
-if __name__ == '__main__':
+# --- ROUTES ---
+@app.route("/")
+def home():
+    if bot_status["connected"]:
+        return "<h2>🎬 Movie Flix Bot Connected ✅</h2>"
+    else:
+        return "<h2>❌ Bot Not Connected Yet</h2>"
+
+# --- STARTUP ---
+if __name__ == "__main__":
     threading.Thread(target=start_bot).start()
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host="0.0.0.0", port=10000)
+    
