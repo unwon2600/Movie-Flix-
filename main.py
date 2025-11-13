@@ -14,12 +14,11 @@ bot = Client("MovieFlix", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 def run_bot():
     print("🎬 Movie Flix Telegram Bot Starting...")
 
-    # Ensure asyncio loop exists for threaded environments (like Render)
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+    import asyncio
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(bot.start())
 
-    bot.run()
+    print("✅ Bot started successfully!")
+    return bot
     
