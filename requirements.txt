@@ -5,3 +5,4 @@ dnspython
 requests
 motor
 python-dotenv
+Flask
