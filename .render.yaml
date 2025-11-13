@@ -1,0 +1,6 @@
+services:
+  - type: worker
+    name: MovieFlixFilterBot
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python3 main.py"
