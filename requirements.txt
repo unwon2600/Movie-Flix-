@@ -4,3 +4,4 @@ pymongo
 dnspython
 requests
 motor
+python-dotenv
