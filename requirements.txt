@@ -6,3 +6,4 @@ cinemagoer
 imdbpy
 python-dotenv
 rapidfuzz
+requests
