@@ -1,24 +1,19 @@
-from info import *
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from info import *
 
-app = Client(
+bot = Client(
     "AutoFilterBot",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN
 )
 
-@app.on_message(filters.command("start") & filters.private)
-async def start_cmd(client, message):
-    name = message.from_user.first_name
-    buttons = [
-        [InlineKeyboardButton("📢 Channel", url="https://t.me/YourChannel")],
-        [InlineKeyboardButton("👤 Owner", url="https://t.me/YourOwner")]
-    ]
+@bot.on_message(filters.command("start"))
+async def start(client, message):
     await message.reply_text(
-        f"Hello {name} 👋\n\nI am your Auto Filter Movie Bot!",
-        reply_markup=InlineKeyboardMarkup(buttons)
+        f"👋 Hello {message.from_user.first_name}!\n\n"
+        "I'm an Auto Filter Bot. Send me a movie name or use the channel filter."
     )
 
-app.run()
+print("✅ Bot is starting...")
+bot.run()
