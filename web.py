@@ -1,18 +1,22 @@
-from flask import Flask
-import threading
+from pyrogram import Client
 import os
-from main import run_bot
+from dotenv import load_dotenv
+import asyncio
 
-app = Flask(__name__)
+load_dotenv()
 
-@app.route("/")
-def home():
-    return "🎬 Movie Flix Bot is Running!"
+API_ID = int(os.getenv("API_ID"))
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-# --- Start Bot in Background ---
-threading.Thread(target=run_bot).start()
+bot = Client("MovieFlix", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+
+async def main():
+    print("🎬 Movie Flix Telegram Bot Starting...")
+    await bot.start()
+    print("Bot is running...")
+    await bot.idle()  # keeps the bot alive
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    asyncio.run(main())
     
