@@ -5,4 +5,5 @@ pymongo
 requests
 python-dotenv
 rapidfuzz
-IMDbPY
+imdbpy
+aiohttp
