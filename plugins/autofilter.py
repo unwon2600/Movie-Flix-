@@ -237,3 +237,5 @@ async def cb_handler(client, callback_query):
         await callback_query.message.reply_text(text)
     else:
         await callback_query.answer()
+        ModuleNotFoundError: No module named 'requests'
+
