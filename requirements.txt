@@ -1,8 +1,8 @@
-pyrogram==2.0.106
+pyrogram
 tgcrypto
-Flask==3.1.2
-python-dotenv
-pymongo
 motor
+pymongo
 requests
-gunicorn
+python-dotenv
+rapidfuzz
+IMDbPY
