@@ -1,1 +1,1 @@
-importlib.import_module(f"plugins.{name}")
+# plugins package
